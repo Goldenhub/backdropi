@@ -5,6 +5,16 @@ import { PADDING_MAX } from '@/lib/constants'
 
 const RADIUS_PRESETS = [0, 8, 16, 32]
 
+function cornerPath(r: number): string {
+  const inset = 8
+  const end = 64
+  if (r === 0) return `M ${inset} ${end} V ${inset} H ${end}`
+  const radius = Math.min(r, 40)
+  const arcX = inset + radius
+  const arcY = inset + radius
+  return `M ${inset} ${end} V ${arcY} A ${radius} ${radius} 0 0 1 ${arcX} ${inset} H ${end}`
+}
+
 export function CornerControls() {
   const { state, dispatch } = useEditor()
 
@@ -20,17 +30,16 @@ export function CornerControls() {
           <button
             key={r}
             onClick={() => dispatch({ type: 'SET_CORNER_RADIUS', payload: r })}
-            className={`flex flex-col items-center gap-2 p-2 rounded-lg border transition-all duration-150 ${
+            className={`flex flex-col items-center gap-1.5 p-2.5 rounded-lg border transition-all duration-150 ${
               state.cornerRadius === r
                 ? 'border-primary bg-primary/5 ring-1 ring-primary'
                 : 'border-border hover:border-primary/50 hover:bg-accent'
             }`}
           >
-            <div
-              className="w-8 h-8 bg-primary/20"
-              style={{ borderRadius: r }}
-            />
-            <span className="text-[11px] font-medium text-muted-foreground">{r}</span>
+            <svg viewBox="0 0 72 72" className="w-14 h-14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <path d={cornerPath(r)} />
+            </svg>
+            <span className="text-[11px] font-medium text-muted-foreground">{r}px</span>
           </button>
         ))}
       </div>
