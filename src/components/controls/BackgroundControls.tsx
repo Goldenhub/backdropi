@@ -1,12 +1,11 @@
 import { useEditor } from '@/context/EditorContext'
-import { Palette, PaintBucket, Image, SlidersHorizontal, ArrowRight, ArrowUpRight, ArrowUp, ArrowUpLeft, ArrowLeft, ArrowDownLeft, ArrowDown, ArrowDownRight } from 'lucide-react'
+import { Palette, PaintBucket, Image, SlidersHorizontal } from 'lucide-react'
 import { ColorPicker } from '@/components/ui/ColorPicker'
 import { UnsplashPicker } from './UnsplashPicker'
 import { UnsplashIcon } from '@/components/ui/UnsplashIcon'
 import type { Background } from '@/types'
 import { useRef } from 'react'
 
-const DIRECTION_ICONS = [ArrowRight, ArrowUpRight, ArrowUp, ArrowUpLeft, ArrowLeft, ArrowDownLeft, ArrowDown, ArrowDownRight]
 const DIRECTION_VALUES = [0, 45, 90, 135, 180, 225, 270, 315]
 
 export function BackgroundControls() {
@@ -76,31 +75,52 @@ export function BackgroundControls() {
               <span className="text-xs font-medium text-muted-foreground">Direction</span>
             </div>
             <div className="grid grid-cols-4 gap-1.5">
-              {DIRECTION_VALUES.map((val, i) => {
-                const Icon = DIRECTION_ICONS[i]
-                return (
-                  <button
-                    key={val}
-                    onClick={() => setBackground({ ...bg, direction: val })}
-                    className={`flex items-center justify-center w-full aspect-square rounded-lg text-xs transition-all duration-150 ${
-                      bg.direction === val
-                        ? 'bg-primary text-primary-foreground shadow-sm'
-                        : 'bg-secondary text-muted-foreground hover:text-foreground hover:bg-accent'
-                    }`}
-                  >
-                    <Icon className="w-3.5 h-3.5" />
-                  </button>
-                )
-              })}
+              {DIRECTION_VALUES.map((val) => (
+                <button
+                  key={val}
+                  onClick={() => setBackground({ ...bg, direction: val })}
+                  className={`w-full aspect-square rounded-lg overflow-hidden border-2 transition-all duration-150 ${
+                    bg.direction === val
+                      ? 'border-primary shadow-sm'
+                      : 'border-border hover:border-primary/50'
+                  }`}
+                >
+                  <div
+                    className="w-full h-full"
+                    style={{
+                      background: `linear-gradient(${val + 90}deg, ${bg.colors[0]}, ${bg.colors[1]})`,
+                    }}
+                  />
+                </button>
+              ))}
             </div>
             <div className="mt-3">
+              <div className="flex justify-between items-center mb-1.5">
+                <span className="text-xs font-medium text-muted-foreground">Angle</span>
+                <span className="text-[11px] font-mono text-muted-foreground tabular-nums">{bg.direction}°</span>
+              </div>
               <input
                 type="range"
                 min={0}
                 max={360}
                 value={bg.direction}
                 onChange={(e) => setBackground({ ...bg, direction: Number(e.target.value) })}
-                className="w-full h-1.5 rounded-full appearance-none cursor-pointer bg-secondary accent-primary [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:shadow-sm"
+                style={{
+                  background: `linear-gradient(to right, var(--color-primary) 0%, var(--color-primary) ${(bg.direction / 360) * 100}%, var(--color-secondary) ${(bg.direction / 360) * 100}%, var(--color-secondary) 100%)`,
+                }}
+                className="w-full h-1.5 rounded-full appearance-none cursor-pointer transition-all duration-150
+                  [&::-webkit-slider-thumb]:appearance-none
+                  [&::-webkit-slider-thumb]:w-4
+                  [&::-webkit-slider-thumb]:h-4
+                  [&::-webkit-slider-thumb]:rounded-full
+                  [&::-webkit-slider-thumb]:bg-background
+                  [&::-webkit-slider-thumb]:border-2
+                  [&::-webkit-slider-thumb]:border-primary
+                  [&::-webkit-slider-thumb]:shadow-sm
+                  [&::-webkit-slider-thumb]:transition-transform
+                  [&::-webkit-slider-thumb]:duration-150
+                  [&::-webkit-slider-thumb]:hover:scale-110
+                  [&::-webkit-slider-thumb]:active:scale-95"
               />
             </div>
           </div>
