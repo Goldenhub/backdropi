@@ -2,48 +2,49 @@ import { EditorProvider } from '@/context/EditorContext'
 import { Toolbar } from '@/components/editor/Toolbar'
 import { Canvas } from '@/components/editor/Canvas'
 import { DropZone } from '@/components/upload/DropZone'
-import { BackgroundControls } from '@/components/controls/BackgroundControls'
-import { ShadowControls } from '@/components/controls/ShadowControls'
-import { CornerControls } from '@/components/controls/CornerControls'
-import { UnsplashPicker } from '@/components/controls/UnsplashPicker'
+import { ToolPalette } from '@/components/editor/ToolPalette'
+import { ToolPanel } from '@/components/editor/ToolPanel'
 import { useEditor } from '@/context/EditorContext'
+import { useState } from 'react'
+import type { ToolId } from '@/components/editor/ToolPalette'
 
-function Sidebar() {
+function Workspace() {
   const { state } = useEditor()
+  const [activeTool, setActiveTool] = useState<ToolId | null>(null)
+
+  if (!state.sourceImage) {
+    return (
+      <div className="flex items-center justify-center flex-1">
+        <div className="w-full max-w-md px-8">
+          <DropZone />
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <aside className="w-80 shrink-0 border-r border-border bg-background overflow-y-auto">
-      <div className="p-5 space-y-6">
-        {state.sourceImage ? (
-          <>
-            <BackgroundControls />
-            <div className="border-t border-border pt-5">
-              <ShadowControls />
-            </div>
-            <div className="border-t border-border pt-5">
-              <CornerControls />
-            </div>
-            <div className="border-t border-border pt-5">
-              <UnsplashPicker />
-            </div>
-          </>
-        ) : (
-          <DropZone />
+    <div className="flex flex-1 min-h-0 relative">
+      <div className="flex items-start gap-3 p-4 absolute left-0 top-0 bottom-0 z-10 pointer-events-none">
+        <div className="pointer-events-auto">
+          <ToolPalette activeTool={activeTool} onSelect={setActiveTool} />
+        </div>
+        {activeTool && (
+          <div className="pointer-events-auto">
+            <ToolPanel tool={activeTool} onClose={() => setActiveTool(null)} />
+          </div>
         )}
       </div>
-    </aside>
+      <Canvas />
+    </div>
   )
 }
 
 function App() {
   return (
     <EditorProvider>
-      <div className="h-screen w-screen flex flex-col bg-muted text-foreground overflow-hidden">
+      <div className="h-screen w-screen flex flex-col bg-muted text-foreground overflow-hidden relative">
         <Toolbar />
-        <div className="flex flex-1 min-h-0">
-          <Sidebar />
-          <Canvas />
-        </div>
+        <Workspace />
       </div>
     </EditorProvider>
   )
