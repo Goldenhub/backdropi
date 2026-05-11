@@ -3,7 +3,6 @@ import { ColorPicker } from '@/components/ui/ColorPicker'
 import { UnsplashIcon } from '@/components/ui/UnsplashIcon'
 import { Palette, PaintBucket, ArrowRight, ArrowUpRight, ArrowUp, ArrowUpLeft, ArrowLeft, ArrowDownLeft, ArrowDown, ArrowDownRight, SlidersHorizontal } from 'lucide-react'
 import type { Background } from '@/types'
-import { Button } from '@/components/ui/Button'
 import { UnsplashPicker } from '@/components/controls/UnsplashPicker'
 
 const DIRECTION_ICONS = [ArrowRight, ArrowUpRight, ArrowUp, ArrowUpLeft, ArrowLeft, ArrowDownLeft, ArrowDown, ArrowDownRight]
@@ -17,39 +16,29 @@ export function BackgroundControls() {
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-2">
-        <Button
-          variant={bg.type === 'solid' ? 'primary' : 'secondary'}
-          size="sm"
-          onClick={() => setBackground({ type: 'solid', color: bg.type === 'solid' ? bg.color : '#e4e4e7' })}
-        >
-          <Palette className="w-3.5 h-3.5" />
-          Solid
-        </Button>
-        <Button
-          variant={bg.type === 'gradient' ? 'primary' : 'secondary'}
-          size="sm"
-          onClick={() => setBackground({
-            type: 'gradient',
-            colors: bg.type === 'gradient' ? bg.colors : ['#a78bfa', '#f9a8d4'],
-            direction: bg.type === 'gradient' ? bg.direction : 135,
-          })}
-        >
-          <PaintBucket className="w-3.5 h-3.5" />
-          Gradient
-        </Button>
-        <Button
-          variant={bg.type === 'unsplash' ? 'primary' : 'secondary'}
-          size="sm"
-          onClick={() => {
-            if (bg.type !== 'unsplash') {
-              setBackground({ type: 'unsplash', photoId: '', urls: { regular: '', small: '' }, authorName: '', authorLink: '' })
-            }
-          }}
-        >
-          <UnsplashIcon className="w-3.5 h-3.5" />
-          Unsplash
-        </Button>
+      <div className="grid grid-cols-3 gap-1">
+        {([
+          { key: 'solid', icon: Palette, label: 'Solid' },
+          { key: 'gradient', icon: PaintBucket, label: 'Gradient' },
+          { key: 'unsplash', icon: UnsplashIcon, label: 'Unsplash' },
+        ] as const).map(({ key, icon: Icon, label }) => (
+          <button
+            key={key}
+            onClick={() => {
+              if (key === 'solid') setBackground({ type: 'solid', color: bg.type === 'solid' ? bg.color : '#e4e4e7' })
+              else if (key === 'gradient') setBackground({ type: 'gradient', colors: bg.type === 'gradient' ? bg.colors : ['#a78bfa', '#f9a8d4'], direction: bg.type === 'gradient' ? bg.direction : 135 })
+              else if (key === 'unsplash' && bg.type !== 'unsplash') setBackground({ type: 'unsplash', photoId: '', urls: { regular: '', small: '' }, authorName: '', authorLink: '' })
+            }}
+            className={`flex items-center justify-center gap-1 px-2 py-1.5 text-xs font-medium rounded-lg transition-all duration-150 active:scale-[0.97] ${
+              bg.type === key
+                ? 'bg-primary text-primary-foreground shadow-sm'
+                : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
+            }`}
+          >
+            <Icon className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">{label}</span>
+          </button>
+        ))}
       </div>
 
       {bg.type === 'solid' && (
