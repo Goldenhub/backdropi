@@ -3,16 +3,37 @@ import { Slider } from '@/components/ui/Slider'
 import { Square, Expand } from 'lucide-react'
 import { PADDING_MAX } from '@/lib/constants'
 
-const RADIUS_PRESETS = [0, 8, 16, 32]
+const RADIUS_PRESETS = [0, 16, 32, 64]
 
-function cornerPath(r: number): string {
-  const inset = 8
-  const end = 64
-  if (r === 0) return `M ${inset} ${end} V ${inset} H ${end}`
-  const radius = Math.min(r, 40)
-  const arcX = inset + radius
-  const arcY = inset + radius
-  return `M ${inset} ${end} V ${arcY} A ${radius} ${radius} 0 0 1 ${arcX} ${inset} H ${end}`
+function CornerPreview({ r }: { r: number }) {
+  const s = 100, pad = 12, end = 88
+  const radius = Math.min(r, 64)
+  const ax = pad + radius
+  const ay = pad + radius
+
+  const sharp = `M ${pad} ${end} V ${pad} H ${end}`
+  const round = radius === 0 ? sharp : `M ${pad} ${end} V ${ay} A ${radius} ${radius} 0 0 1 ${ax} ${pad} H ${end}`
+  const fill = radius === 0 ? '' : `M ${pad} ${pad} L ${pad} ${ay} A ${radius} ${radius} 0 0 0 ${ax} ${pad} Z`
+
+  return (
+    <svg viewBox={`0 0 ${s} ${s}`} className="w-16 h-16" fill="none">
+      <defs>
+        <filter id={`shadow-${r}`}>
+          <feDropShadow dx="0" dy="1" stdDeviation="1" floodOpacity="0.15" />
+        </filter>
+      </defs>
+      {fill && <path d={fill} className="fill-primary/10" />}
+      <path d={sharp} className="stroke-border" strokeWidth="1.5" strokeDasharray="3 3" strokeLinecap="round" />
+      <path
+        d={round}
+        className="stroke-foreground"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        filter={`url(#shadow-${r})`}
+      />
+    </svg>
+  )
 }
 
 export function CornerControls() {
@@ -30,15 +51,13 @@ export function CornerControls() {
           <button
             key={r}
             onClick={() => dispatch({ type: 'SET_CORNER_RADIUS', payload: r })}
-            className={`flex flex-col items-center gap-1.5 p-2.5 rounded-lg border transition-all duration-150 ${
+            className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all duration-150 ${
               state.cornerRadius === r
-                ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                : 'border-border hover:border-primary/50 hover:bg-accent'
+                ? 'border-primary bg-primary/5 ring-1 ring-primary shadow-sm'
+                : 'border-border hover:border-primary/50 hover:bg-accent hover:shadow-sm'
             }`}
           >
-            <svg viewBox="0 0 72 72" className="w-14 h-14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-              <path d={cornerPath(r)} />
-            </svg>
+            <CornerPreview r={r} />
             <span className="text-[11px] font-medium text-muted-foreground">{r}px</span>
           </button>
         ))}
