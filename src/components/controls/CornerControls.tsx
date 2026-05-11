@@ -3,11 +3,11 @@ import { Slider } from '@/components/ui/Slider'
 import { Square, Expand } from 'lucide-react'
 import { PADDING_MAX } from '@/lib/constants'
 
-const RADIUS_PRESETS = [0, 16, 32, 64]
+const RADIUS_PRESETS = [0, 32, 64, 128]
 
 function CornerPreview({ r }: { r: number }) {
-  const s = 100, pad = 12, end = 88
-  const radius = Math.min(r, 64)
+  const s = 180, pad = 14, end = 166
+  const radius = Math.min(r, 140)
   const ax = pad + radius
   const ay = pad + radius
 
