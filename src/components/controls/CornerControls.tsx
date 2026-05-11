@@ -3,7 +3,7 @@ import { Slider } from '@/components/ui/Slider'
 import { Square, Expand } from 'lucide-react'
 import { PADDING_MAX } from '@/lib/constants'
 
-const RADIUS_PRESETS = [0, 32, 64, 128]
+const RADIUS_PRESETS = [0, 16, 64]
 
 function CornerPreview({ r }: { r: number }) {
   const s = 180, pad = 14, end = 166
@@ -46,7 +46,7 @@ export function CornerControls() {
         <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Corners</h3>
       </div>
 
-      <div className="grid grid-cols-4 gap-2">
+      <div className="grid grid-cols-3 gap-2">
         {RADIUS_PRESETS.map((r) => (
           <button
             key={r}
@@ -62,6 +62,14 @@ export function CornerControls() {
           </button>
         ))}
       </div>
+
+      <Slider
+        label="Border radius"
+        value={state.cornerRadius}
+        min={0}
+        max={128}
+        onChange={(v) => dispatch({ type: 'SET_CORNER_RADIUS', payload: v })}
+      />
 
       <div className="flex items-center gap-2">
         <Expand className="w-3 h-3 text-muted-foreground" />
