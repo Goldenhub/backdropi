@@ -64,8 +64,7 @@ function drawImageFit(ctx: CanvasRenderingContext2D, img: HTMLImageElement | Ima
   ctx.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh)
 }
 
-async function drawBackground(ctx: CanvasRenderingContext2D, state: EditorState) {
-  const { width, height } = ctx.canvas
+async function drawBackground(ctx: CanvasRenderingContext2D, state: EditorState, width: number, height: number) {
   const bg = state.background
 
   switch (bg.type) {
@@ -104,10 +103,10 @@ async function drawBackground(ctx: CanvasRenderingContext2D, state: EditorState)
 }
 
 export async function renderToCanvas(ctx: CanvasRenderingContext2D, state: EditorState) {
-  const { width, height } = ctx.canvas
+  const { width, height } = state.canvasSize ?? ctx.canvas
   ctx.clearRect(0, 0, width, height)
 
-  await drawBackground(ctx, state)
+  await drawBackground(ctx, state, width, height)
 
   if (state.sourceImage) {
     const p = state.padding
