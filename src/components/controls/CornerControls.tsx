@@ -1,6 +1,6 @@
 import { useEditor } from '@/context/EditorContext'
 import { Slider } from '@/components/ui/Slider'
-import { Square, Expand } from 'lucide-react'
+import { Expand } from 'lucide-react'
 import { PADDING_MAX } from '@/lib/constants'
 
 const RADIUS_PRESETS = [0, 16, 64]
@@ -41,11 +41,6 @@ export function CornerControls() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-2">
-        <Square className="w-3.5 h-3.5 text-muted-foreground" />
-        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Corners</h3>
-      </div>
-
       <div className="grid grid-cols-3 gap-2">
         {RADIUS_PRESETS.map((r) => (
           <button
