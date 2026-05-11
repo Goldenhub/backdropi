@@ -23,17 +23,17 @@ function Workspace() {
   }
 
   return (
-    <div className="flex flex-1 min-h-0 relative">
-      <div className="flex items-start gap-3 p-4 absolute left-0 top-0 bottom-0 z-10 pointer-events-none">
-        <div className="pointer-events-auto">
+    <div className="flex flex-1 min-h-0">
+      <div className="flex flex-col shrink-0 bg-background border-r border-border">
+        <div className="p-3">
           <ToolPalette activeTool={activeTool} onSelect={setActiveTool} />
         </div>
-        {activeTool && (
-          <div className="pointer-events-auto">
-            <ToolPanel tool={activeTool} onClose={() => setActiveTool(null)} />
-          </div>
-        )}
       </div>
+      {activeTool && (
+        <div className="w-72 shrink-0 border-r border-border bg-background overflow-y-auto">
+          <ToolPanel tool={activeTool} onClose={() => setActiveTool(null)} />
+        </div>
+      )}
       <Canvas />
     </div>
   )

@@ -26,7 +26,7 @@ export function ToolPanel({ tool, onClose }: ToolPanelProps) {
   const Panel = TOOL_PANELS[tool]
 
   return (
-    <div className="w-72 bg-background rounded-xl shadow-lg ring-1 ring-black/5 p-5 animate-in slide-in-from-left-2 duration-150">
+    <div className="p-5">
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
           <Icon className="w-4 h-4 text-foreground" />
