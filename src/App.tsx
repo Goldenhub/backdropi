@@ -24,11 +24,11 @@ function Workspace() {
 
   return (
     <div className="flex flex-1 min-h-0">
-      <div className="flex flex-col shrink-0 py-4 pl-4">
+      <div className="flex flex-col shrink-0 pt-8 pb-4 pl-4">
         <ToolPalette activeTool={activeTool} onSelect={setActiveTool} />
       </div>
       {activeTool && (
-        <div className="w-72 shrink-0 py-4 overflow-y-auto">
+        <div className="w-72 shrink-0 pt-8 pb-4 ml-3 overflow-y-auto">
           <div className="h-fit">
             <ToolPanel tool={activeTool} onClose={() => setActiveTool(null)} />
           </div>
