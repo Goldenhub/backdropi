@@ -19,12 +19,15 @@ src/
 │   ├── useUnsplashSearch.ts # Debounced Unsplash API
 │   └── useExport.ts         # HiDPI export
 ├── components/
-│   ├── ui/                  # Primitives: Button, Slider, ColorPicker
+│   ├── ui/                  # Primitives: Slider, ColorPicker
 │   ├── upload/              # DropZone (click, dnd, paste)
 │   ├── controls/            # Feature panels
 │   └── editor/              # Canvas + Toolbar
 └── App.tsx                  # Layout: Toolbar | Sidebar + Canvas
 ```
+
+## Design Theme
+Glassy, modern, warm. Cream + lavender palette. Frosted glass panels use `bg-white/60 backdrop-blur-xl ring-1 ring-white/50 shadow-lg shadow-black/[0.03]`. App background is a warm gradient (160deg cream → beige). Primary color: `#b894c4` (soft lavender).
 
 ## Conventions
 - **Types** in `types/index.ts` — `EditorState` is the single source of truth. New features add a field here.
@@ -34,8 +37,10 @@ src/
 - **UI primitives** in `ui/` — no logic, just presentation.
 - State management is `useReducer` + Context. Swap for Zustand later if needed — same shape.
 - **Icons**: use `lucide-react`. Import only the icons needed.
-- **Styling**: shadcn-style light theme. Use CSS variables: `bg-background`, `text-foreground`, `text-muted-foreground`, `bg-secondary`, `border-border`, etc.
+- **Styling**: glassy theme via CSS variables in `index.css`. Custom inline styles for backdrop gradients. Use `bg-white/60 backdrop-blur-xl` for glass panels.
 - **Animations**: use `transition-all duration-150` on interactive elements, `active:scale-[0.97]` on buttons.
+- **Mockup types**: only `screenshot` and `browser` remain (laptop/desktop removed).
+- **Replace image**: toolbar Upload icon + canvas hover "Replace" button both trigger file input.
 
 ## Environment
 - `VITE_UNSPLASH_ACCESS_KEY` — required for Unsplash search
