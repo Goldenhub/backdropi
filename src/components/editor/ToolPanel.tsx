@@ -4,13 +4,11 @@ import { X } from 'lucide-react'
 import { BackgroundControls } from '@/components/controls/BackgroundControls'
 import { ShadowControls } from '@/components/controls/ShadowControls'
 import { CornerControls } from '@/components/controls/CornerControls'
-import { UnsplashPicker } from '@/components/controls/UnsplashPicker'
 
 const TOOL_PANELS: Record<ToolId, () => React.ReactNode> = {
   background: BackgroundControls,
   shadow: ShadowControls,
   corners: CornerControls,
-  unsplash: UnsplashPicker,
 }
 
 interface ToolPanelProps {

@@ -1,8 +1,10 @@
 import { useEditor } from '@/context/EditorContext'
 import { ColorPicker } from '@/components/ui/ColorPicker'
+import { UnsplashIcon } from '@/components/ui/UnsplashIcon'
 import { Palette, PaintBucket, ArrowRight, ArrowUpRight, ArrowUp, ArrowUpLeft, ArrowLeft, ArrowDownLeft, ArrowDown, ArrowDownRight, SlidersHorizontal } from 'lucide-react'
 import type { Background } from '@/types'
 import { Button } from '@/components/ui/Button'
+import { UnsplashPicker } from '@/components/controls/UnsplashPicker'
 
 const DIRECTION_ICONS = [ArrowRight, ArrowUpRight, ArrowUp, ArrowUpLeft, ArrowLeft, ArrowDownLeft, ArrowDown, ArrowDownRight]
 const DIRECTION_VALUES = [0, 45, 90, 135, 180, 225, 270, 315]
@@ -15,8 +17,6 @@ export function BackgroundControls() {
 
   return (
     <div className="space-y-4">
-      <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Background</h3>
-
       <div className="flex gap-2">
         <Button
           variant={bg.type === 'solid' ? 'primary' : 'secondary'}
@@ -37,6 +37,18 @@ export function BackgroundControls() {
         >
           <PaintBucket className="w-3.5 h-3.5" />
           Gradient
+        </Button>
+        <Button
+          variant={bg.type === 'unsplash' ? 'primary' : 'secondary'}
+          size="sm"
+          onClick={() => {
+            if (bg.type !== 'unsplash') {
+              setBackground({ type: 'unsplash', photoId: '', urls: { regular: '', small: '' }, authorName: '', authorLink: '' })
+            }
+          }}
+        >
+          <UnsplashIcon className="w-3.5 h-3.5" />
+          Unsplash
         </Button>
       </div>
 
@@ -86,6 +98,8 @@ export function BackgroundControls() {
           </div>
         </div>
       )}
+
+      {bg.type === 'unsplash' && <UnsplashPicker />}
     </div>
   )
 }
