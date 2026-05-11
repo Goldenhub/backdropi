@@ -99,9 +99,9 @@ function reduce(state: EditorState, action: EditorAction): EditorState {
           : null,
       }
     case 'SET_MOCKUP_TYPE':
-      return action.payload === 'browser'
-        ? { ...state, mockupType: action.payload, cornerRadius: 0 }
-        : { ...state, mockupType: action.payload }
+      return action.payload === 'screenshot'
+        ? { ...state, mockupType: action.payload }
+        : { ...state, mockupType: action.payload, cornerRadius: 0 }
     case 'SET_EXPORT_FORMAT':
       return { ...state, exportFormat: action.payload }
     case 'SET_EXPORT_QUALITY':
