@@ -3,7 +3,7 @@ import { Slider } from '@/components/ui/Slider'
 import { ColorPicker } from '@/components/ui/ColorPicker'
 import { SHADOW_PRESETS } from '@/lib/constants'
 import type { ShadowPreset } from '@/lib/constants'
-import { CircleDotDashed } from 'lucide-react'
+import { CircleDotDashed, Check } from 'lucide-react'
 
 function getOpacity(color: string): number {
   if (color.length === 9) {
@@ -29,19 +29,26 @@ function PresetCard({ preset, active, onClick }: { preset: ShadowPreset; active:
   return (
     <button
       onClick={onClick}
-      className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all duration-150 ${
+      className={`relative flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition-all duration-150 ${
         active
-          ? 'border-primary bg-primary/5 ring-1 ring-primary shadow-sm'
-          : 'border-border hover:border-primary/50 hover:bg-accent'
+          ? 'border-primary bg-primary/5 shadow-sm'
+          : 'border-transparent bg-secondary/50 hover:border-border hover:bg-secondary'
       }`}
     >
+      {active && (
+        <div className="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-primary flex items-center justify-center">
+          <Check className="w-2.5 h-2.5 text-primary-foreground" />
+        </div>
+      )}
       <div
-        className="w-full h-10 rounded-md bg-background border border-border"
+        className="w-full h-12 rounded-lg bg-background ring-1 ring-border/50"
         style={{
           boxShadow: `${preset.offsetX}px ${preset.offsetY}px ${preset.blur}px ${preset.spread}px ${preset.color}`,
         }}
       />
-      <span className="text-[11px] font-medium text-muted-foreground">{preset.label}</span>
+      <span className={`text-xs font-medium ${active ? 'text-foreground' : 'text-muted-foreground'}`}>
+        {preset.label}
+      </span>
     </button>
   )
 }
@@ -73,6 +80,9 @@ export function ShadowControls() {
 
       {s.enabled && (
         <>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-medium text-muted-foreground">Presets</span>
+          </div>
           <div className="grid grid-cols-2 gap-2">
             {SHADOW_PRESETS.map((preset, i) => (
               <PresetCard
