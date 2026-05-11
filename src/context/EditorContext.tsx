@@ -1,6 +1,7 @@
 import { createContext, useContext, useReducer, useEffect, useCallback, useRef, useState, type ReactNode } from 'react'
 import type { EditorState, EditorAction } from '@/types'
 import { DEFAULT_STATE } from '@/lib/constants'
+import { extractColors } from '@/lib/colors'
 
 const STORAGE_KEY = 'backdropi-state'
 const SAVE_DEBOUNCE_MS = 300
@@ -106,6 +107,8 @@ function reduce(state: EditorState, action: EditorAction): EditorState {
       return { ...state, exportFormat: action.payload }
     case 'SET_EXPORT_QUALITY':
       return { ...state, exportQuality: action.payload }
+    case 'SET_EXTRACTED_COLORS':
+      return { ...state, extractedColors: action.payload }
     case 'RESET':
       return DEFAULT_STATE
     default:
@@ -176,6 +179,18 @@ export function EditorProvider({ children }: { children: ReactNode }) {
       }
     }
   }, [ready, saved, state.sourceImage])
+
+  useEffect(() => {
+    if (!state.sourceImage) {
+      if (state.extractedColors.length > 0) dispatch({ type: 'SET_EXTRACTED_COLORS', payload: [] })
+      return
+    }
+    const id = setTimeout(() => {
+      const colors = extractColors(state.sourceImage!)
+      dispatch({ type: 'SET_EXTRACTED_COLORS', payload: colors })
+    }, 100)
+    return () => clearTimeout(id)
+  }, [state.sourceImage])
 
   useEffect(() => {
     if (saveTimer.current) clearTimeout(saveTimer.current)

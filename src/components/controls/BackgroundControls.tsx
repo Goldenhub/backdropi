@@ -1,6 +1,7 @@
 import { useEditor } from '@/context/EditorContext'
 import { Palette, PaintBucket, Image, SlidersHorizontal } from 'lucide-react'
 import { ColorPicker } from '@/components/ui/ColorPicker'
+import { ColorSwatches } from '@/components/ui/ColorSwatches'
 import { UnsplashPicker } from './UnsplashPicker'
 import { UnsplashIcon } from '@/components/ui/UnsplashIcon'
 import type { Background } from '@/types'
@@ -60,7 +61,10 @@ export function BackgroundControls() {
       />
 
       {bg.type === 'solid' && (
-        <ColorPicker label="Color" value={bg.color} onChange={(color) => setBackground({ type: 'solid', color })} />
+        <>
+          <ColorPicker label="Color" value={bg.color} onChange={(color) => setBackground({ type: 'solid', color })} />
+          <ColorSwatches value={bg.color} onChange={(color) => setBackground({ type: 'solid', color })} label="From image" />
+        </>
       )}
 
       {bg.type === 'gradient' && (
@@ -69,6 +73,7 @@ export function BackgroundControls() {
             <ColorPicker label="Start" value={bg.colors[0]} onChange={(c) => setBackground({ ...bg, colors: [c, bg.colors[1]] })} />
             <ColorPicker label="End" value={bg.colors[1]} onChange={(c) => setBackground({ ...bg, colors: [bg.colors[0], c] })} />
           </div>
+          <ColorSwatches value={bg.colors[0]} onChange={(c) => setBackground({ ...bg, colors: [c, bg.colors[1]] })} label="From image" />
           <div>
             <div className="flex items-center gap-2 mb-2.5">
               <SlidersHorizontal className="w-3 h-3 text-muted-foreground" />

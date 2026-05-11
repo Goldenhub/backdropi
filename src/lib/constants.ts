@@ -42,6 +42,7 @@ export const DEFAULT_STATE: EditorState = {
   exportFormat: 'png',
   exportQuality: 0.92,
   canvasSize: null,
+  extractedColors: [],
   _past: [],
   _future: [],
 }

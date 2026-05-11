@@ -47,6 +47,7 @@ export interface EditorState {
   exportFormat: 'png' | 'jpeg'
   exportQuality: number
   canvasSize: { width: number; height: number } | null
+  extractedColors: string[]
   _past: EditorState[]
   _future: EditorState[]
 }
@@ -61,6 +62,7 @@ export type EditorAction =
   | { type: 'SET_MOCKUP_TYPE'; payload: MockupType }
   | { type: 'SET_EXPORT_FORMAT'; payload: 'png' | 'jpeg' }
   | { type: 'SET_EXPORT_QUALITY'; payload: number }
+  | { type: 'SET_EXTRACTED_COLORS'; payload: string[] }
   | { type: 'UNDO' }
   | { type: 'REDO' }
   | { type: 'RESET' }

@@ -1,6 +1,7 @@
 import { useEditor } from '@/context/EditorContext'
 import { Slider } from '@/components/ui/Slider'
 import { ColorPicker } from '@/components/ui/ColorPicker'
+import { ColorSwatches } from '@/components/ui/ColorSwatches'
 import { SHADOW_PRESETS } from '@/lib/constants'
 import type { ShadowPreset } from '@/lib/constants'
 import { CircleDotDashed, Check } from 'lucide-react'
@@ -97,6 +98,7 @@ export function ShadowControls() {
           <Slider label="Blur" value={s.blur} min={0} max={100} onChange={(v) => setShadow({ blur: v })} />
           <Slider label="Opacity" value={opacity} min={0} max={100} onChange={(v) => setShadow({ color: setOpacity(s.color, v) })} />
           <ColorPicker label="Color" value={s.color.slice(0, 7)} onChange={(c) => setShadow({ color: c + getAlphaHex(s.color) })} />
+          <ColorSwatches value={s.color.slice(0, 7)} onChange={(c) => setShadow({ color: c + getAlphaHex(s.color) })} label="From image" />
         </>
       )}
     </div>
