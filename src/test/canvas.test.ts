@@ -17,6 +17,7 @@ function createMockContext(): CanvasRenderingContext2D {
     arcTo: vi.fn(),
     clip: vi.fn(),
     fill: vi.fn(),
+    stroke: vi.fn(),
     drawImage: vi.fn(),
     createLinearGradient: vi.fn(() => ({
       addColorStop: vi.fn(),
@@ -107,9 +108,7 @@ describe('renderToCanvas', () => {
       cornerRadius: 0,
       padding: 48,
     }
-    const saveSpy = vi.fn()
-    ctx.save = saveSpy
     await renderToCanvas(ctx, state)
-    expect(saveSpy).toHaveBeenCalledTimes(0)
+    expect(ctx.shadowColor).toBeUndefined()
   })
 })

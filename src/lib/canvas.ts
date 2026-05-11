@@ -106,10 +106,27 @@ export async function renderToCanvas(ctx: CanvasRenderingContext2D, state: Edito
   const { width, height } = state.canvasSize ?? ctx.canvas
   ctx.clearRect(0, 0, width, height)
 
-  await drawBackground(ctx, state, width, height)
-
   if (state.sourceImage) {
     const p = state.padding
+    const cardRadius = state.cornerRadius + p
+
+    ctx.save()
+    if (cardRadius > 0) {
+      roundRect(ctx, 0, 0, width, height, cardRadius)
+      ctx.clip()
+    }
+    await drawBackground(ctx, state, width, height)
+    ctx.restore()
+
+    if (cardRadius > 0) {
+      ctx.save()
+      ctx.strokeStyle = 'rgba(0,0,0,0.06)'
+      ctx.lineWidth = 1
+      roundRect(ctx, 0, 0, width, height, cardRadius)
+      ctx.stroke()
+      ctx.restore()
+    }
+
     const cw = width - p * 2
     const ch = height - p * 2
 
@@ -157,5 +174,7 @@ export async function renderToCanvas(ctx: CanvasRenderingContext2D, state: Edito
     if (state.cornerRadius > 0) {
       ctx.restore()
     }
+  } else {
+    await drawBackground(ctx, state, width, height)
   }
 }
