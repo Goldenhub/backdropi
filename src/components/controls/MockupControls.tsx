@@ -1,12 +1,10 @@
 import { useEditor } from '@/context/EditorContext'
-import { Monitor, Laptop, Image, Globe } from 'lucide-react'
+import { Image, Globe } from 'lucide-react'
 import type { MockupType } from '@/types'
 
-const OPTIONS: { key: MockupType; icon: typeof Monitor; label: string; desc: string }[] = [
+const OPTIONS: { key: MockupType; icon: typeof Image; label: string; desc: string }[] = [
   { key: 'screenshot', icon: Image, label: 'Screenshot', desc: 'Plain image on background' },
   { key: 'browser', icon: Globe, label: 'Browser', desc: 'Safari-style browser chrome' },
-  { key: 'laptop', icon: Laptop, label: 'Laptop', desc: 'MacBook Pro / MacBook Air frame' },
-  { key: 'desktop', icon: Monitor, label: 'Desktop', desc: 'iMac / Pro Display frame' },
 ]
 
 export function MockupControls() {

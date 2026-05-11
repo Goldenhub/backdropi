@@ -34,7 +34,7 @@ export interface ShadowConfig {
   enabled: boolean
 }
 
-export type MockupType = 'screenshot' | 'browser' | 'laptop' | 'desktop'
+export type MockupType = 'screenshot' | 'browser'
 
 export interface EditorState {
   sourceImage: ImageData | null

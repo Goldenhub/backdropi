@@ -113,10 +113,6 @@ export async function renderToCanvas(ctx: CanvasRenderingContext2D, state: Edito
 
     if (state.mockupType === 'browser') {
       await drawBrowserMockup(ctx, state, width, height, p)
-    } else if (state.mockupType === 'laptop') {
-      await drawLaptopMockup(ctx, state, width, height, p)
-    } else if (state.mockupType === 'desktop') {
-      await drawDesktopMockup(ctx, state, width, height, p)
     } else {
       await drawScreenshotMockup(ctx, state, width, height, p)
     }
@@ -173,6 +169,20 @@ async function drawScreenshotMockup(ctx: CanvasRenderingContext2D, state: Editor
   }
 }
 
+function drawLockIcon(ctx: CanvasRenderingContext2D, x: number, y: number, size: number) {
+  const s = size
+  const hw = s / 2, hh = s * 0.45
+  const bx = x, by = y - hh
+  ctx.beginPath()
+  ctx.moveTo(bx + hw * 0.3, by + hh * 0.5)
+  ctx.lineTo(bx + hw * 0.3, by + hh * 0.15)
+  ctx.bezierCurveTo(bx + hw * 0.3, by - hh * 0.55, bx + hw * 1.7, by - hh * 0.55, bx + hw * 1.7, by + hh * 0.15)
+  ctx.lineTo(bx + hw * 1.7, by + hh * 0.5)
+  ctx.stroke()
+  roundRect(ctx, bx + hw * 0.2, by + hh * 0.35, s * 0.6, s * 0.6, 2)
+  ctx.fill()
+}
+
 async function drawBrowserMockup(ctx: CanvasRenderingContext2D, state: EditorState, width: number, height: number, p: number) {
   const chromeH = 48
   const brX = p
@@ -208,40 +218,46 @@ async function drawBrowserMockup(ctx: CanvasRenderingContext2D, state: EditorSta
     ctx.shadowBlur = state.shadow.blur
     ctx.shadowOffsetX = state.shadow.offsetX
     ctx.shadowOffsetY = state.shadow.offsetY
-    ctx.fillStyle = '#ffffff'
-    roundRect(ctx, brX, brY, brW, brH, winRadius)
-    ctx.fill()
-    ctx.restore()
-  } else {
-    ctx.fillStyle = '#ffffff'
-    roundRect(ctx, brX, brY, brW, brH, winRadius)
-    ctx.fill()
   }
+
+  ctx.fillStyle = '#ffffff'
+  roundRect(ctx, brX, brY, brW, brH, winRadius)
+  ctx.fill()
+
+  if (state.shadow.enabled) ctx.restore()
 
   ctx.save()
   roundRect(ctx, brX, brY, brW, brH, winRadius)
   ctx.clip()
 
-  ctx.fillStyle = '#f4f4f5'
+  const chromeGrad = ctx.createLinearGradient(brX, brY, brX, brY + chromeH)
+  chromeGrad.addColorStop(0, '#fafafa')
+  chromeGrad.addColorStop(1, '#f0f0f1')
+  ctx.fillStyle = chromeGrad
   ctx.fillRect(brX, brY, brW, chromeH)
 
   const separatorY = brY + chromeH
-  ctx.strokeStyle = '#e4e4e7'
+  ctx.strokeStyle = '#d4d4d8'
   ctx.lineWidth = 1
   ctx.beginPath()
   ctx.moveTo(brX, separatorY)
   ctx.lineTo(brX + brW, separatorY)
   ctx.stroke()
 
-  const dotR = 8
+  const dotR = 7
   const dotY = brY + chromeH / 2
   const dotColors = ['#ff5f5f', '#ffbd2e', '#28c840']
   const dotStart = brX + 20
 
   dotColors.forEach((color, i) => {
     ctx.beginPath()
-    ctx.arc(dotStart + i * 24, dotY, dotR, 0, Math.PI * 2)
+    ctx.arc(dotStart + i * 22, dotY, dotR, 0, Math.PI * 2)
     ctx.fillStyle = color
+    ctx.fill()
+
+    ctx.beginPath()
+    ctx.arc(dotStart + i * 22, dotY, dotR - 1.5, 0, Math.PI * 2)
+    ctx.fillStyle = 'rgba(255,255,255,0.25)'
     ctx.fill()
   })
 
@@ -259,238 +275,26 @@ async function drawBrowserMockup(ctx: CanvasRenderingContext2D, state: EditorSta
   roundRect(ctx, urlX, urlY, urlW, urlH, 9)
   ctx.stroke()
 
+  ctx.fillStyle = '#71717a'
   ctx.font = '13px system-ui, -apple-system, sans-serif'
   ctx.textAlign = 'left'
   ctx.textBaseline = 'middle'
 
-  const lockX = urlX + 10
-  ctx.fillStyle = '#a1a1aa'
-  ctx.font = '14px system-ui, -apple-system, sans-serif'
-  ctx.fillText('🔒', lockX, urlY + urlH / 2)
-
-  ctx.fillStyle = '#71717a'
-  ctx.font = '13px system-ui, -apple-system, sans-serif'
+  const lockX = urlX + 12
+  drawLockIcon(ctx, lockX, urlY + urlH / 2, 10)
   ctx.fillText('backdropi.app', lockX + 22, urlY + urlH / 2)
 
   ctx.restore()
 
-  ctx.strokeStyle = '#d4d4d8'
-  ctx.lineWidth = 1
+  ctx.strokeStyle = '#c8c8cc'
+  ctx.lineWidth = 1.5
   roundRect(ctx, brX, brY, brW, brH, winRadius)
   ctx.stroke()
 
-  if (state.cornerRadius > 0 && state.mockupType !== 'browser') {
-    ctx.save()
-    roundRect(ctx, dx, dy, dw, dh, state.cornerRadius)
-    ctx.clip()
-  }
-
   const bitmap = await createImageBitmap(img)
   ctx.drawImage(bitmap, dx, dy, dw, dh)
   bitmap.close()
-
-  if (state.cornerRadius > 0 && state.mockupType !== 'browser') {
-    ctx.restore()
-  }
 }
 
-async function drawLaptopMockup(ctx: CanvasRenderingContext2D, state: EditorState, width: number, height: number, p: number) {
-  const cw = width - p * 2
-  const ch = height - p * 2
 
-  const img = state.sourceImage!
-  const imgAspect = img.width / img.height
-  const containerAspect = cw / ch
 
-  let dw: number, dh: number
-  if (imgAspect > containerAspect) {
-    dw = cw
-    dh = cw / imgAspect
-  } else {
-    dh = ch
-    dw = ch * imgAspect
-  }
-
-  const dx = (width - dw) / 2
-  const dy = (height - dh) / 2
-
-  const bezelSide = Math.max(18, Math.round(dw * 0.045))
-  const bezelTop = Math.max(16, Math.round(dh * 0.06))
-  const bezelBottom = Math.max(20, Math.round(dh * 0.065))
-  const bodyW = dw + bezelSide * 2
-  const bodyH = dh + bezelTop + bezelBottom
-  const bodyX = dx - bezelSide
-  const bodyY = dy - bezelTop
-  const bodyRadius = 14
-
-  const bitmap = await createImageBitmap(img)
-  ctx.drawImage(bitmap, dx, dy, dw, dh)
-  bitmap.close()
-
-  if (state.shadow.enabled) {
-    ctx.save()
-    ctx.shadowColor = state.shadow.color
-    ctx.shadowBlur = state.shadow.blur
-    ctx.shadowOffsetX = state.shadow.offsetX
-    ctx.shadowOffsetY = state.shadow.offsetY
-    ctx.fillStyle = '#58585e'
-    roundRect(ctx, bodyX, bodyY, bodyW, bodyH, bodyRadius)
-    ctx.fill()
-    ctx.restore()
-  }
-
-  ctx.fillStyle = '#58585e'
-  roundRect(ctx, bodyX, bodyY, bodyW, bodyH, bodyRadius)
-  ctx.fill()
-
-  const bodyGrad = ctx.createLinearGradient(bodyX, bodyY, bodyX, bodyY + bodyH)
-  bodyGrad.addColorStop(0, '#8a8a90')
-  bodyGrad.addColorStop(0.12, '#727278')
-  bodyGrad.addColorStop(0.35, '#66666c')
-  bodyGrad.addColorStop(0.6, '#6a6a70')
-  bodyGrad.addColorStop(0.85, '#58585e')
-  bodyGrad.addColorStop(1, '#4a4a50')
-  ctx.fillStyle = bodyGrad
-  roundRect(ctx, bodyX, bodyY, bodyW, bodyH, bodyRadius)
-  ctx.fill()
-
-  const reflGrad = ctx.createLinearGradient(bodyX, bodyY, bodyX, bodyY + bodyH * 0.3)
-  reflGrad.addColorStop(0, 'rgba(255,255,255,0.18)')
-  reflGrad.addColorStop(0.5, 'rgba(255,255,255,0.04)')
-  reflGrad.addColorStop(1, 'rgba(255,255,255,0)')
-  ctx.fillStyle = reflGrad
-  roundRect(ctx, bodyX, bodyY, bodyW, bodyH, bodyRadius)
-  ctx.fill()
-
-  ctx.strokeStyle = 'rgba(180,180,190,0.35)'
-  ctx.lineWidth = 1
-  roundRect(ctx, bodyX, bodyY, bodyW, bodyH, bodyRadius)
-  ctx.stroke()
-
-  const bezelPad = 3
-  ctx.fillStyle = '#111113'
-  roundRect(ctx, dx - bezelPad, dy - bezelPad, dw + bezelPad * 2, dh + bezelPad * 2, 4)
-  ctx.fill()
-
-  ctx.save()
-  ctx.globalCompositeOperation = 'destination-out'
-  ctx.fillStyle = '#000000'
-  roundRect(ctx, dx, dy, dw, dh, 2)
-  ctx.fill()
-  ctx.restore()
-}
-
-async function drawDesktopMockup(ctx: CanvasRenderingContext2D, state: EditorState, width: number, height: number, p: number) {
-  const cw = width - p * 2
-  const ch = height - p * 2
-
-  const img = state.sourceImage!
-  const imgAspect = img.width / img.height
-  const containerAspect = cw / ch
-
-  let dw: number, dh: number
-  if (imgAspect > containerAspect) {
-    dw = cw
-    dh = cw / imgAspect
-  } else {
-    dh = ch
-    dw = ch * imgAspect
-  }
-
-  const dx = (width - dw) / 2
-  const dy = (height - dh) / 2
-
-  const bezelSide = Math.max(14, Math.round(dw * 0.025))
-  const bezelTop = Math.max(12, Math.round(dh * 0.025))
-  const chinH = Math.max(45, Math.round(dh * 0.12))
-  const monitorW = dw + bezelSide * 2
-  const monitorH = dh + bezelTop + chinH
-  const monitorX = dx - bezelSide
-  const monitorY = dy - bezelTop
-  const monitorRadius = 10
-
-  const standNeckH = Math.round(dh * 0.18)
-  const standNeckTopW = Math.round(monitorW * 0.2)
-  const standNeckBotW = Math.round(monitorW * 0.45)
-  const baseH = 6
-  const baseW = Math.round(monitorW * 0.55)
-  const standTopX = monitorX + (monitorW - standNeckTopW) / 2
-  const standBotX = monitorX + (monitorW - standNeckBotW) / 2
-  const baseX = monitorX + (monitorW - baseW) / 2
-  const standTopY = monitorY + monitorH
-  const standBotY = standTopY + standNeckH
-  const baseY = standBotY
-
-  const bitmap = await createImageBitmap(img)
-  ctx.drawImage(bitmap, dx, dy, dw, dh)
-  bitmap.close()
-
-  const neckGrad = ctx.createLinearGradient(0, standTopY, 0, standBotY)
-  neckGrad.addColorStop(0, '#b0b0b5')
-  neckGrad.addColorStop(0.3, '#a0a0a5')
-  neckGrad.addColorStop(1, '#88888d')
-  ctx.fillStyle = neckGrad
-  ctx.beginPath()
-  ctx.moveTo(standTopX, standTopY)
-  ctx.lineTo(standTopX + standNeckTopW, standTopY)
-  ctx.lineTo(standBotX + standNeckBotW, standBotY)
-  ctx.lineTo(standBotX, standBotY)
-  ctx.closePath()
-  ctx.fill()
-
-  ctx.fillStyle = '#88888d'
-  roundRect(ctx, baseX, baseY, baseW, baseH, 3)
-  ctx.fill()
-
-  if (state.shadow.enabled) {
-    ctx.save()
-    ctx.shadowColor = state.shadow.color
-    ctx.shadowBlur = state.shadow.blur
-    ctx.shadowOffsetX = state.shadow.offsetX
-    ctx.shadowOffsetY = state.shadow.offsetY
-    ctx.fillStyle = '#c0c0c5'
-    roundRect(ctx, monitorX, monitorY, monitorW, monitorH, monitorRadius)
-    ctx.fill()
-    ctx.restore()
-  }
-
-  ctx.fillStyle = '#c0c0c5'
-  roundRect(ctx, monitorX, monitorY, monitorW, monitorH, monitorRadius)
-  ctx.fill()
-
-  const bodyGrad = ctx.createLinearGradient(monitorX, monitorY, monitorX, monitorY + monitorH)
-  bodyGrad.addColorStop(0, '#e8e8ec')
-  bodyGrad.addColorStop(0.1, '#d8d8dc')
-  bodyGrad.addColorStop(0.35, '#c8c8cc')
-  bodyGrad.addColorStop(0.65, '#c0c0c5')
-  bodyGrad.addColorStop(0.9, '#b0b0b5')
-  bodyGrad.addColorStop(1, '#a4a4a8')
-  ctx.fillStyle = bodyGrad
-  roundRect(ctx, monitorX, monitorY, monitorW, monitorH, monitorRadius)
-  ctx.fill()
-
-  const reflGrad = ctx.createLinearGradient(monitorX, monitorY, monitorX, monitorY + monitorH * 0.25)
-  reflGrad.addColorStop(0, 'rgba(255,255,255,0.25)')
-  reflGrad.addColorStop(0.5, 'rgba(255,255,255,0.05)')
-  reflGrad.addColorStop(1, 'rgba(255,255,255,0)')
-  ctx.fillStyle = reflGrad
-  roundRect(ctx, monitorX, monitorY, monitorW, monitorH, monitorRadius)
-  ctx.fill()
-
-  ctx.strokeStyle = 'rgba(220,220,225,0.5)'
-  ctx.lineWidth = 1
-  roundRect(ctx, monitorX, monitorY, monitorW, monitorH, monitorRadius)
-  ctx.stroke()
-
-  const bezelPad = 2
-  ctx.fillStyle = '#111113'
-  roundRect(ctx, dx - bezelPad, dy - bezelPad, dw + bezelPad * 2, dh + bezelPad * 2, 4)
-  ctx.fill()
-
-  ctx.save()
-  ctx.globalCompositeOperation = 'destination-out'
-  ctx.fillStyle = '#000000'
-  roundRect(ctx, dx, dy, dw, dh, 2)
-  ctx.fill()
-  ctx.restore()
-}

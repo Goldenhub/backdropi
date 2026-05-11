@@ -42,7 +42,11 @@ function Workspace() {
 function App() {
   return (
     <EditorProvider>
-      <div className="h-screen w-screen flex flex-col bg-muted text-foreground overflow-hidden relative">
+      <div className="h-screen w-screen flex flex-col overflow-hidden relative"
+        style={{
+          background: 'linear-gradient(160deg, #fcf9f6 0%, #f5efe8 40%, #f0edea 100%)',
+        }}
+      >
         <Toolbar />
         <Workspace />
       </div>

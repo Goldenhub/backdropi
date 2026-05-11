@@ -39,15 +39,13 @@ function CornerPreview({ r }: { r: number }) {
 export function CornerControls() {
   const { state, dispatch } = useEditor()
   const isBrowser = state.mockupType === 'browser'
-  const isDevice = state.mockupType === 'laptop' || state.mockupType === 'desktop'
-  const disabled = isBrowser || isDevice
 
-  if (disabled) {
+  if (isBrowser) {
     return (
       <div className="space-y-4">
         <div className="flex items-center gap-2 rounded-lg bg-secondary/50 px-3 py-2.5">
           <span className="text-xs text-muted-foreground">
-            Corner radius is not available in Browser, Laptop, or Desktop mockup mode.
+            Corner radius is not available in Browser mockup mode.
           </span>
         </div>
 
