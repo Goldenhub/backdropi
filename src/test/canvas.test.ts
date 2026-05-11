@@ -89,7 +89,7 @@ describe('renderToCanvas', () => {
       canvasSize: { width: 800, height: 600 },
       shadow: { offsetX: 5, offsetY: 10, blur: 20, spread: 0, color: '#000', enabled: true },
       cornerRadius: 0,
-      padding: 48,
+      padding: DEFAULT_STATE.padding,
     }
     await renderToCanvas(ctx, state)
     expect(ctx.save).toHaveBeenCalled()
@@ -106,7 +106,7 @@ describe('renderToCanvas', () => {
       canvasSize: { width: 800, height: 600 },
       shadow: { offsetX: 0, offsetY: 8, blur: 24, spread: 0, color: '#000', enabled: false },
       cornerRadius: 0,
-      padding: 48,
+      padding: DEFAULT_STATE.padding,
     }
     await renderToCanvas(ctx, state)
     expect(ctx.shadowColor).toBeUndefined()

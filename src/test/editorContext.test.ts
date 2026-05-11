@@ -4,7 +4,7 @@ import { DEFAULT_STATE } from '@/lib/constants'
 
 describe('editorReducer', () => {
   it('returns default state initially', () => {
-    const state = editorReducer(undefined, { type: 'RESET' })
+    const state = editorReducer(DEFAULT_STATE, { type: 'RESET' })
     expect(state).toEqual(DEFAULT_STATE)
   })
 

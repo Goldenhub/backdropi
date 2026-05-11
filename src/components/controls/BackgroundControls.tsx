@@ -1,9 +1,10 @@
 import { useEditor } from '@/context/EditorContext'
+import { Palette, PaintBucket, Image, SlidersHorizontal, ArrowRight, ArrowUpRight, ArrowUp, ArrowUpLeft, ArrowLeft, ArrowDownLeft, ArrowDown, ArrowDownRight } from 'lucide-react'
 import { ColorPicker } from '@/components/ui/ColorPicker'
+import { UnsplashPicker } from './UnsplashPicker'
 import { UnsplashIcon } from '@/components/ui/UnsplashIcon'
-import { Palette, PaintBucket, ArrowRight, ArrowUpRight, ArrowUp, ArrowUpLeft, ArrowLeft, ArrowDownLeft, ArrowDown, ArrowDownRight, SlidersHorizontal } from 'lucide-react'
 import type { Background } from '@/types'
-import { UnsplashPicker } from '@/components/controls/UnsplashPicker'
+import { useRef } from 'react'
 
 const DIRECTION_ICONS = [ArrowRight, ArrowUpRight, ArrowUp, ArrowUpLeft, ArrowLeft, ArrowDownLeft, ArrowDown, ArrowDownRight]
 const DIRECTION_VALUES = [0, 45, 90, 135, 180, 225, 270, 315]
@@ -11,15 +12,16 @@ const DIRECTION_VALUES = [0, 45, 90, 135, 180, 225, 270, 315]
 export function BackgroundControls() {
   const { state, dispatch } = useEditor()
   const bg = state.background
-
   const setBackground = (b: Background) => dispatch({ type: 'SET_BACKGROUND', payload: b })
+  const imageInputRef = useRef<HTMLInputElement>(null)
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-3 gap-1">
+      <div className="grid grid-cols-4 gap-1">
         {([
-          { key: 'solid', icon: Palette, label: 'Solid' },
+          { key: 'solid', icon: Palette, label: 'Color' },
           { key: 'gradient', icon: PaintBucket, label: 'Gradient' },
+          { key: 'image', icon: Image, label: 'Image' },
           { key: 'unsplash', icon: UnsplashIcon, label: 'Unsplash' },
         ] as const).map(({ key, icon: Icon, label }) => (
           <button
@@ -27,9 +29,10 @@ export function BackgroundControls() {
             onClick={() => {
               if (key === 'solid') setBackground({ type: 'solid', color: bg.type === 'solid' ? bg.color : '#e4e4e7' })
               else if (key === 'gradient') setBackground({ type: 'gradient', colors: bg.type === 'gradient' ? bg.colors : ['#a78bfa', '#f9a8d4'], direction: bg.type === 'gradient' ? bg.direction : 135 })
+              else if (key === 'image') imageInputRef.current?.click()
               else if (key === 'unsplash' && bg.type !== 'unsplash') setBackground({ type: 'unsplash', photoId: '', urls: { regular: '', small: '' }, authorName: '', authorLink: '' })
             }}
-            className={`flex items-center justify-center gap-1 px-2 py-1.5 text-xs font-medium rounded-lg transition-all duration-150 active:scale-[0.97] ${
+            className={`flex items-center justify-center gap-1 px-2 py-2 text-xs font-medium rounded-lg transition-all duration-150 active:scale-[0.97] ${
               bg.type === key
                 ? 'bg-primary text-primary-foreground shadow-sm'
                 : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
@@ -40,6 +43,22 @@ export function BackgroundControls() {
           </button>
         ))}
       </div>
+
+      <input
+        ref={imageInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={(e) => {
+          const file = e.target.files?.[0]
+          if (!file) return
+          const reader = new FileReader()
+          reader.onload = (ev) => {
+            setBackground({ type: 'image', src: ev.target?.result as string, fit: 'cover' })
+          }
+          reader.readAsDataURL(file)
+        }}
+      />
 
       {bg.type === 'solid' && (
         <ColorPicker label="Color" value={bg.color} onChange={(color) => setBackground({ type: 'solid', color })} />
@@ -84,6 +103,27 @@ export function BackgroundControls() {
                 className="w-full h-1.5 rounded-full appearance-none cursor-pointer bg-secondary accent-primary [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:shadow-sm"
               />
             </div>
+          </div>
+        </div>
+      )}
+
+      {bg.type === 'image' && (
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-medium text-muted-foreground shrink-0">Fit</span>
+          <div className="flex gap-1">
+            {(['cover', 'contain', 'fill'] as const).map((fit) => (
+              <button
+                key={fit}
+                onClick={() => setBackground({ ...bg, fit })}
+                className={`px-2.5 py-1 text-xs font-medium rounded-md transition-all duration-150 ${
+                  bg.fit === fit
+                    ? 'bg-primary text-primary-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
+                }`}
+              >
+                {fit}
+              </button>
+            ))}
           </div>
         </div>
       )}

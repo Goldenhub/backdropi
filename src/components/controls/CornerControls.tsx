@@ -38,6 +38,33 @@ function CornerPreview({ r }: { r: number }) {
 
 export function CornerControls() {
   const { state, dispatch } = useEditor()
+  const isBrowser = state.mockupType === 'browser'
+
+  if (isBrowser) {
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 rounded-lg bg-secondary/50 px-3 py-2.5">
+          <span className="text-xs text-muted-foreground">
+            Corner radius is not available in Browser mockup mode.
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Expand className="w-3 h-3 text-muted-foreground" />
+          <div className="flex-1">
+            <Slider
+              label="Padding"
+              value={state.padding}
+              min={0}
+              max={PADDING_MAX}
+              step={4}
+              onChange={(v) => dispatch({ type: 'SET_PADDING', payload: v })}
+            />
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-4">

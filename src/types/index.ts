@@ -34,6 +34,8 @@ export interface ShadowConfig {
   enabled: boolean
 }
 
+export type MockupType = 'screenshot' | 'browser'
+
 export interface EditorState {
   sourceImage: ImageData | null
   sourceImageSrc: string | null
@@ -41,9 +43,12 @@ export interface EditorState {
   shadow: ShadowConfig
   cornerRadius: number
   padding: number
+  mockupType: MockupType
   exportFormat: 'png' | 'jpeg'
   exportQuality: number
   canvasSize: { width: number; height: number } | null
+  _past: EditorState[]
+  _future: EditorState[]
 }
 
 export type EditorAction =
@@ -53,8 +58,11 @@ export type EditorAction =
   | { type: 'SET_SHADOW'; payload: Partial<ShadowConfig> }
   | { type: 'SET_CORNER_RADIUS'; payload: number }
   | { type: 'SET_PADDING'; payload: number }
+  | { type: 'SET_MOCKUP_TYPE'; payload: MockupType }
   | { type: 'SET_EXPORT_FORMAT'; payload: 'png' | 'jpeg' }
   | { type: 'SET_EXPORT_QUALITY'; payload: number }
+  | { type: 'UNDO' }
+  | { type: 'REDO' }
   | { type: 'RESET' }
 
 export interface UnsplashPhoto {

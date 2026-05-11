@@ -110,52 +110,182 @@ export async function renderToCanvas(ctx: CanvasRenderingContext2D, state: Edito
 
   if (state.sourceImage) {
     const p = state.padding
-    const cw = width - p * 2
-    const ch = height - p * 2
 
-    const imgAspect = state.sourceImage.width / state.sourceImage.height
-    const containerAspect = cw / ch
-
-    let dw: number, dh: number
-    if (imgAspect > containerAspect) {
-      dw = cw
-      dh = cw / imgAspect
+    if (state.mockupType === 'browser') {
+      await drawBrowserMockup(ctx, state, width, height, p)
     } else {
-      dh = ch
-      dw = ch * imgAspect
+      await drawScreenshotMockup(ctx, state, width, height, p)
     }
+  }
+}
 
-    const dx = (width - dw) / 2
-    const dy = (height - dh) / 2
+async function drawScreenshotMockup(ctx: CanvasRenderingContext2D, state: EditorState, width: number, height: number, p: number) {
+  const cw = width - p * 2
+  const ch = height - p * 2
 
-    if (state.shadow.enabled) {
-      ctx.save()
-      ctx.shadowColor = state.shadow.color
-      ctx.shadowBlur = state.shadow.blur
-      ctx.shadowOffsetX = state.shadow.offsetX
-      ctx.shadowOffsetY = state.shadow.offsetY
+  const imgAspect = state.sourceImage!.width / state.sourceImage!.height
+  const containerAspect = cw / ch
 
-      if (state.cornerRadius > 0) {
-        roundRect(ctx, dx, dy, dw, dh, state.cornerRadius)
-        ctx.fill()
-      } else {
-        ctx.fillRect(dx, dy, dw, dh)
-      }
-      ctx.restore()
-    }
+  let dw: number, dh: number
+  if (imgAspect > containerAspect) {
+    dw = cw
+    dh = cw / imgAspect
+  } else {
+    dh = ch
+    dw = ch * imgAspect
+  }
+
+  const dx = (width - dw) / 2
+  const dy = (height - dh) / 2
+
+  if (state.shadow.enabled) {
+    ctx.save()
+    ctx.shadowColor = state.shadow.color
+    ctx.shadowBlur = state.shadow.blur
+    ctx.shadowOffsetX = state.shadow.offsetX
+    ctx.shadowOffsetY = state.shadow.offsetY
 
     if (state.cornerRadius > 0) {
-      ctx.save()
       roundRect(ctx, dx, dy, dw, dh, state.cornerRadius)
-      ctx.clip()
+      ctx.fill()
+    } else {
+      ctx.fillRect(dx, dy, dw, dh)
     }
+    ctx.restore()
+  }
 
-    const bitmap = await createImageBitmap(state.sourceImage)
-    ctx.drawImage(bitmap, dx, dy, dw, dh)
-    bitmap.close()
+  if (state.cornerRadius > 0) {
+    ctx.save()
+    roundRect(ctx, dx, dy, dw, dh, state.cornerRadius)
+    ctx.clip()
+  }
 
-    if (state.cornerRadius > 0) {
-      ctx.restore()
-    }
+  const bitmap = await createImageBitmap(state.sourceImage!)
+  ctx.drawImage(bitmap, dx, dy, dw, dh)
+  bitmap.close()
+
+  if (state.cornerRadius > 0) {
+    ctx.restore()
+  }
+}
+
+async function drawBrowserMockup(ctx: CanvasRenderingContext2D, state: EditorState, width: number, height: number, p: number) {
+  const chromeH = 48
+  const brX = p
+  const brY = p
+  const brW = width - p * 2
+  const brH = height - p * 2
+  const winRadius = 12
+
+  const contentX = brX
+  const contentY = brY + chromeH
+  const contentW = brW
+  const contentH = brH - chromeH
+
+  const img = state.sourceImage!
+  const imgAspect = img.width / img.height
+  const containerAspect = contentW / contentH
+
+  let dw: number, dh: number
+  if (imgAspect > containerAspect) {
+    dw = contentW
+    dh = contentW / imgAspect
+  } else {
+    dh = contentH
+    dw = contentH * imgAspect
+  }
+
+  const dx = contentX + (contentW - dw) / 2
+  const dy = contentY + (contentH - dh) / 2
+
+  if (state.shadow.enabled) {
+    ctx.save()
+    ctx.shadowColor = state.shadow.color
+    ctx.shadowBlur = state.shadow.blur
+    ctx.shadowOffsetX = state.shadow.offsetX
+    ctx.shadowOffsetY = state.shadow.offsetY
+    ctx.fillStyle = '#ffffff'
+    roundRect(ctx, brX, brY, brW, brH, winRadius)
+    ctx.fill()
+    ctx.restore()
+  } else {
+    ctx.fillStyle = '#ffffff'
+    roundRect(ctx, brX, brY, brW, brH, winRadius)
+    ctx.fill()
+  }
+
+  ctx.save()
+  roundRect(ctx, brX, brY, brW, brH, winRadius)
+  ctx.clip()
+
+  ctx.fillStyle = '#f4f4f5'
+  ctx.fillRect(brX, brY, brW, chromeH)
+
+  const separatorY = brY + chromeH
+  ctx.strokeStyle = '#e4e4e7'
+  ctx.lineWidth = 1
+  ctx.beginPath()
+  ctx.moveTo(brX, separatorY)
+  ctx.lineTo(brX + brW, separatorY)
+  ctx.stroke()
+
+  const dotR = 8
+  const dotY = brY + chromeH / 2
+  const dotColors = ['#ff5f5f', '#ffbd2e', '#28c840']
+  const dotStart = brX + 20
+
+  dotColors.forEach((color, i) => {
+    ctx.beginPath()
+    ctx.arc(dotStart + i * 24, dotY, dotR, 0, Math.PI * 2)
+    ctx.fillStyle = color
+    ctx.fill()
+  })
+
+  const urlW = Math.min(360, Math.round(brW * 0.5))
+  const urlH = 30
+  const urlX = brX + (brW - urlW) / 2
+  const urlY = brY + (chromeH - urlH) / 2
+
+  ctx.fillStyle = '#ffffff'
+  roundRect(ctx, urlX, urlY, urlW, urlH, 9)
+  ctx.fill()
+
+  ctx.strokeStyle = '#d4d4d8'
+  ctx.lineWidth = 1
+  roundRect(ctx, urlX, urlY, urlW, urlH, 9)
+  ctx.stroke()
+
+  ctx.font = '13px system-ui, -apple-system, sans-serif'
+  ctx.textAlign = 'left'
+  ctx.textBaseline = 'middle'
+
+  const lockX = urlX + 10
+  ctx.fillStyle = '#a1a1aa'
+  ctx.font = '14px system-ui, -apple-system, sans-serif'
+  ctx.fillText('🔒', lockX, urlY + urlH / 2)
+
+  ctx.fillStyle = '#71717a'
+  ctx.font = '13px system-ui, -apple-system, sans-serif'
+  ctx.fillText('backdropi.app', lockX + 22, urlY + urlH / 2)
+
+  ctx.restore()
+
+  ctx.strokeStyle = '#d4d4d8'
+  ctx.lineWidth = 1
+  roundRect(ctx, brX, brY, brW, brH, winRadius)
+  ctx.stroke()
+
+  if (state.cornerRadius > 0 && state.mockupType !== 'browser') {
+    ctx.save()
+    roundRect(ctx, dx, dy, dw, dh, state.cornerRadius)
+    ctx.clip()
+  }
+
+  const bitmap = await createImageBitmap(img)
+  ctx.drawImage(bitmap, dx, dy, dw, dh)
+  bitmap.close()
+
+  if (state.cornerRadius > 0 && state.mockupType !== 'browser') {
+    ctx.restore()
   }
 }

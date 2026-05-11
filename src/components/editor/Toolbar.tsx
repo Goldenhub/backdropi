@@ -1,10 +1,10 @@
 import { useEditor } from '@/context/EditorContext'
 import { useExport } from '@/hooks/useExport'
 import { Button } from '@/components/ui/Button'
-import { Download, Image, FileImage } from 'lucide-react'
+import { Download, Image, FileImage, Undo2, Redo2 } from 'lucide-react'
 
 export function Toolbar() {
-  const { state, dispatch } = useEditor()
+  const { state, dispatch, canUndo, canRedo } = useEditor()
   const { export: handleExport } = useExport()
 
   return (
@@ -17,6 +17,27 @@ export function Toolbar() {
       </div>
 
       <div className="flex items-center gap-3">
+        <div className="flex items-center gap-0.5 bg-secondary rounded-lg p-1">
+          <button
+            onClick={() => dispatch({ type: 'UNDO' })}
+            disabled={!canUndo}
+            title="Undo (⌘Z)"
+            className="flex items-center justify-center w-7 h-7 rounded-md text-muted-foreground hover:text-foreground hover:bg-background transition-colors disabled:opacity-30 disabled:pointer-events-none"
+          >
+            <Undo2 className="w-3.5 h-3.5" />
+          </button>
+          <button
+            onClick={() => dispatch({ type: 'REDO' })}
+            disabled={!canRedo}
+            title="Redo (⇧⌘Z)"
+            className="flex items-center justify-center w-7 h-7 rounded-md text-muted-foreground hover:text-foreground hover:bg-background transition-colors disabled:opacity-30 disabled:pointer-events-none"
+          >
+            <Redo2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
+
+        <div className="w-px h-5 bg-border" />
+
         <div className="flex items-center gap-1.5 bg-secondary rounded-lg p-1">
           <button
             onClick={() => dispatch({ type: 'SET_EXPORT_FORMAT', payload: 'png' })}

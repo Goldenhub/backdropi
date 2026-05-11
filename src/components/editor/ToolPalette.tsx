@@ -1,6 +1,6 @@
-import { Palette, CircleDotDashed, Square } from 'lucide-react'
+import { Palette, CircleDotDashed, Square, Monitor } from 'lucide-react'
 
-export type ToolId = 'background' | 'shadow' | 'corners'
+export type ToolId = 'background' | 'shadow' | 'corners' | 'mockup'
 
 export interface ToolDef {
   id: ToolId
@@ -9,6 +9,7 @@ export interface ToolDef {
 }
 
 export const TOOLS: ToolDef[] = [
+  { id: 'mockup', icon: Monitor, label: 'Mockup' },
   { id: 'background', icon: Palette, label: 'Background' },
   { id: 'shadow', icon: CircleDotDashed, label: 'Shadow' },
   { id: 'corners', icon: Square, label: 'Corners' },
