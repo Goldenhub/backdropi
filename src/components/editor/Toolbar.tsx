@@ -2,7 +2,8 @@ import { useRef } from 'react'
 import { useEditor } from '@/context/EditorContext'
 import { useExport } from '@/hooks/useExport'
 import { useImageUpload } from '@/hooks/useImageUpload'
-import { Download, Image, FileImage, Undo2, Redo2, Upload } from 'lucide-react'
+import { Logo } from '@/components/ui/Logo'
+import { Download, FileImage, Undo2, Redo2, Upload } from 'lucide-react'
 
 export function Toolbar() {
   const { state, dispatch, canUndo, canRedo } = useEditor()
@@ -13,9 +14,7 @@ export function Toolbar() {
   return (
     <header className="flex items-center justify-between px-5 py-3 bg-white/70 backdrop-blur-xl border-b border-white/30 shadow-sm">
       <div className="flex items-center gap-3">
-        <div className="w-7 h-7 rounded-lg bg-primary/20 flex items-center justify-center">
-          <Image className="w-4 h-4" style={{ color: '#b894c4' }} />
-        </div>
+        <Logo />
         <span className="font-semibold text-sm tracking-tight text-foreground/80">backdropi</span>
       </div>
 
