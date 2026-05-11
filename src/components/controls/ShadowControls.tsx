@@ -89,7 +89,7 @@ export function ShadowControls() {
                 key={i}
                 preset={preset}
                 active={matchesPreset(preset, s.offsetX, s.offsetY, s.blur, s.spread)}
-                onClick={() => setShadow(preset)}
+                onClick={() => setShadow({ offsetX: preset.offsetX, offsetY: preset.offsetY, blur: preset.blur, spread: preset.spread })}
               />
             ))}
           </div>
