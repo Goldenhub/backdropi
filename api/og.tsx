@@ -27,7 +27,7 @@ export default async function handler() {
                 width: '72px',
                 height: '72px',
                 borderRadius: '16px',
-                backgroundColor: '#c8a0d8',
+                background: 'linear-gradient(135deg, #dbb8e8, #c096d0)',
               }}
             />
             <div
@@ -38,7 +38,8 @@ export default async function handler() {
                 width: '66px',
                 height: '66px',
                 borderRadius: '14px',
-                backgroundColor: '#b894c4',
+                background: 'linear-gradient(135deg, #d0b0dc, #b088c0)',
+                boxShadow: '0 2px 4px rgba(139,112,152,0.25)',
               }}
             />
           </div>

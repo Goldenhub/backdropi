@@ -1,8 +1,21 @@
 export function Logo({ className = 'w-7 h-7' }: { className?: string }) {
   return (
     <svg viewBox="0 0 32 32" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="4" y="5" width="24" height="24" rx="6" fill="#c8a0d8" />
-      <rect x="6" y="3" width="22" height="22" rx="5.5" fill="#b894c4" />
+      <defs>
+        <linearGradient id="bg-logo" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#dbb8e8" />
+          <stop offset="100%" stop-color="#c096d0" />
+        </linearGradient>
+        <linearGradient id="fg-logo" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#d0b0dc" />
+          <stop offset="100%" stop-color="#b088c0" />
+        </linearGradient>
+        <filter id="shadow-logo" x="-10%" y="-10%" width="130%" height="130%">
+          <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#8b7098" flood-opacity="0.3" />
+        </filter>
+      </defs>
+      <rect x="4" y="5" width="24" height="24" rx="6" fill="url(#bg-logo)" />
+      <rect x="6" y="3" width="22" height="22" rx="5.5" fill="url(#fg-logo)" filter="url(#shadow-logo)" />
     </svg>
   )
 }
@@ -10,10 +23,23 @@ export function Logo({ className = 'w-7 h-7' }: { className?: string }) {
 export function Logomark({ className = 'w-4 h-4' }: { className?: string }) {
   return (
     <svg viewBox="0 0 32 32" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="4" y="5" width="24" height="24" rx="6" fill="#c8a0d8" />
-      <rect x="6" y="3" width="22" height="22" rx="5.5" fill="#b894c4" />
+      <defs>
+        <linearGradient id="bg-mark" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#dbb8e8" />
+          <stop offset="100%" stop-color="#c096d0" />
+        </linearGradient>
+        <linearGradient id="fg-mark" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#d0b0dc" />
+          <stop offset="100%" stop-color="#b088c0" />
+        </linearGradient>
+        <filter id="shadow-mark" x="-10%" y="-10%" width="130%" height="130%">
+          <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#8b7098" flood-opacity="0.3" />
+        </filter>
+      </defs>
+      <rect x="4" y="5" width="24" height="24" rx="6" fill="url(#bg-mark)" />
+      <rect x="6" y="3" width="22" height="22" rx="5.5" fill="url(#fg-mark)" filter="url(#shadow-mark)" />
     </svg>
   )
 }
 
-export const FAVICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect x="4" y="5" width="24" height="24" rx="6" fill="#c8a0d8"/><rect x="6" y="3" width="22" height="22" rx="5.5" fill="#b894c4"/></svg>`
+export const FAVICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><defs><linearGradient id="a" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#dbb8e8"/><stop offset="100%" stop-color="#c096d0"/></linearGradient><linearGradient id="b" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#d0b0dc"/><stop offset="100%" stop-color="#b088c0"/></linearGradient><filter id="c"><feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#8b7098" flood-opacity="0.3"/></filter></defs><rect x="4" y="5" width="24" height="24" rx="6" fill="url(#a)"/><rect x="6" y="3" width="22" height="22" rx="5.5" fill="url(#b)" filter="url(#c)"/></svg>`
