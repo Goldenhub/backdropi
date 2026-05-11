@@ -30,3 +30,4 @@ export const DEFAULT_STATE: EditorState = {
 export const IMAGE_MIME_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif', 'image/bmp', 'image/avif']
 export const EXPORT_MIME_TYPES = { png: 'image/png', jpeg: 'image/jpeg' } as const
 export const UPLOAD_MAX_SIZE = 20 * 1024 * 1024
+export const PADDING_MAX = 600

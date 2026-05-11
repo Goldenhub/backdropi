@@ -1,6 +1,7 @@
 import { useEditor } from '@/context/EditorContext'
 import { Slider } from '@/components/ui/Slider'
 import { Square, Expand } from 'lucide-react'
+import { PADDING_MAX } from '@/lib/constants'
 
 export function CornerControls() {
   const { state, dispatch } = useEditor()
@@ -25,7 +26,7 @@ export function CornerControls() {
             label="Padding"
             value={state.padding}
             min={0}
-            max={200}
+            max={PADDING_MAX}
             step={4}
             onChange={(v) => dispatch({ type: 'SET_PADDING', payload: v })}
           />
