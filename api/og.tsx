@@ -18,16 +18,16 @@ export default async function handler() {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '28px' }}>
-          <div style={{ position: 'relative', width: '80px', height: '80px' }}>
+          <div style={{ position: 'relative', width: '90px', height: '90px' }}>
             <div
               style={{
                 position: 'absolute',
                 right: '0',
                 bottom: '0',
-                width: '72px',
-                height: '72px',
-                borderRadius: '16px',
-                background: 'linear-gradient(135deg, #dbb8e8, #c096d0)',
+                width: '80px',
+                height: '80px',
+                borderRadius: '18px',
+                background: 'linear-gradient(135deg, #e8b4c4, #d098a8)',
               }}
             />
             <div
@@ -39,7 +39,7 @@ export default async function handler() {
                 height: '66px',
                 borderRadius: '14px',
                 background: 'linear-gradient(135deg, #d0b0dc, #b088c0)',
-                boxShadow: '0 2px 4px rgba(139,112,152,0.25)',
+                boxShadow: '0 3px 6px rgba(122,96,136,0.3)',
               }}
             />
           </div>
