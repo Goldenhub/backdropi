@@ -15,15 +15,17 @@ export function BackgroundControls() {
   const setBackground = (b: Background) => dispatch({ type: 'SET_BACKGROUND', payload: b })
   const imageInputRef = useRef<HTMLInputElement>(null)
 
+  const tabs = [
+    { key: 'solid', icon: Palette, label: 'Color' },
+    { key: 'gradient', icon: PaintBucket, label: 'Gradient' },
+    { key: 'image', icon: Image, label: 'Image' },
+    { key: 'unsplash', icon: UnsplashIcon, label: 'Unsplash' },
+  ] as const
+
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-4 gap-1">
-        {([
-          { key: 'solid', icon: Palette, label: 'Color' },
-          { key: 'gradient', icon: PaintBucket, label: 'Gradient' },
-          { key: 'image', icon: Image, label: 'Image' },
-          { key: 'unsplash', icon: UnsplashIcon, label: 'Unsplash' },
-        ] as const).map(({ key, icon: Icon, label }) => (
+      <div className="flex gap-1">
+        {tabs.map(({ key, icon: Icon, label }) => (
           <button
             key={key}
             onClick={() => {
@@ -32,14 +34,16 @@ export function BackgroundControls() {
               else if (key === 'image') imageInputRef.current?.click()
               else if (key === 'unsplash' && bg.type !== 'unsplash') setBackground({ type: 'unsplash', photoId: '', urls: { regular: '', small: '' }, authorName: '', authorLink: '' })
             }}
-            className={`flex items-center justify-center gap-1 px-2 py-2 text-xs font-medium rounded-lg transition-all duration-150 active:scale-[0.97] ${
+            className={`group relative flex items-center justify-center p-2 rounded-lg transition-all duration-150 active:scale-[0.97] ${
               bg.type === key
                 ? 'bg-primary text-primary-foreground shadow-sm'
                 : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
             }`}
           >
-            <Icon className="w-3.5 h-3.5 shrink-0" />
-            <span className="truncate">{label}</span>
+            <Icon className="w-3.5 h-3.5" />
+            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-[11px] font-medium text-white bg-gray-900 rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap">
+              {label}
+            </div>
           </button>
         ))}
       </div>
@@ -61,10 +65,10 @@ export function BackgroundControls() {
       />
 
       {bg.type === 'solid' && (
-        <>
+        <div className="space-y-4">
           <ColorPicker label="Color" value={bg.color} onChange={(color) => setBackground({ type: 'solid', color })} />
           <ColorSwatches value={bg.color} onChange={(color) => setBackground({ type: 'solid', color })} label="From image" />
-        </>
+        </div>
       )}
 
       {bg.type === 'gradient' && (

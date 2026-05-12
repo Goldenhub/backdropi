@@ -31,7 +31,7 @@ export function ToolPalette({ activeTool, onSelect }: ToolPaletteProps) {
             key={t.id}
             onClick={() => onSelect(isActive ? null : t.id)}
             title={t.label}
-            className={`flex flex-col items-center gap-1 w-14 py-2 px-1 rounded-lg transition-all duration-150 ${
+            className={`flex flex-col items-center gap-1 w-16 py-2 rounded-lg transition-all duration-150 ${
               isActive
                 ? 'text-white shadow-sm'
                 : 'text-muted-foreground hover:text-foreground hover:bg-white/50'
