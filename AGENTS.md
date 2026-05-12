@@ -1,4 +1,4 @@
-# backdropi — Agent Guide
+# backdropi - Agent Guide
 
 ## Overview
 Browser-based screenshot → polished mockup editor. Built with Vite + React 19 + TypeScript 5 + Tailwind CSS v4.
@@ -9,7 +9,7 @@ src/
 ├── types/index.ts          # All shared types
 ├── lib/
 │   ├── constants.ts        # Defaults, limits, mime types
-│   ├── canvas.ts           # Pure canvas rendering — no React
+│   ├── canvas.ts           # Pure canvas rendering - no React
 │   └── export.ts           # Blob download utility
 ├── context/
 │   └── EditorContext.tsx    # Central state (useReducer)
@@ -30,12 +30,12 @@ src/
 Glassy, modern, warm. Cream + lavender palette. Frosted glass panels use `bg-white/60 backdrop-blur-xl ring-1 ring-white/50 shadow-lg shadow-black/[0.03]`. App background is a warm gradient (160deg cream → beige). Primary color: `#b894c4` (soft lavender).
 
 ## Conventions
-- **Types** in `types/index.ts` — `EditorState` is the single source of truth. New features add a field here.
-- **Canvas rendering** is a pure function in `lib/canvas.ts` — takes state, draws to context. No React refs.
+- **Types** in `types/index.ts` - `EditorState` is the single source of truth. New features add a field here.
+- **Canvas rendering** is a pure function in `lib/canvas.ts` - takes state, draws to context. No React refs.
 - **Controls** are independent components receiving state via `useEditor()`. Add a new one by dropping a file in `controls/`.
 - **Hooks** follow `use<Feature>` naming. One concern per hook.
-- **UI primitives** in `ui/` — no logic, just presentation.
-- State management is `useReducer` + Context. Swap for Zustand later if needed — same shape.
+- **UI primitives** in `ui/` - no logic, just presentation.
+- State management is `useReducer` + Context. Swap for Zustand later if needed - same shape.
 - **Icons**: use `lucide-react`. Import only the icons needed.
 - **Styling**: glassy theme via CSS variables in `index.css`. Custom inline styles for backdrop gradients. Use `bg-white/60 backdrop-blur-xl` for glass panels.
 - **Animations**: use `transition-all duration-150` on interactive elements, `active:scale-[0.97]` on buttons.
@@ -43,12 +43,12 @@ Glassy, modern, warm. Cream + lavender palette. Frosted glass panels use `bg-whi
 - **Replace image**: toolbar Upload icon + canvas hover "Replace" button both trigger file input.
 
 ## Environment
-- `VITE_UNSPLASH_ACCESS_KEY` — required for Unsplash search
+- `VITE_UNSPLASH_ACCESS_KEY` - required for Unsplash search
 
 ## Commands
-- `npm run dev` — start dev server
-- `npm run build` — typecheck + production build
-- `npm run lint` — ESLint
+- `npm run dev` - start dev server
+- `npm run build` - typecheck + production build
+- `npm run lint` - ESLint
 
 ## Adding a Feature
 1. Define types in `types/index.ts` (extend `EditorState`, add union variants)
