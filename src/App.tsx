@@ -1,5 +1,6 @@
 import { EditorProvider } from '@/context/EditorContext'
 import { Toolbar } from '@/components/editor/Toolbar'
+import { Footer } from '@/components/editor/Footer'
 import { Canvas } from '@/components/editor/Canvas'
 import { DropZone } from '@/components/upload/DropZone'
 import { ToolPalette } from '@/components/editor/ToolPalette'
@@ -49,6 +50,7 @@ function App() {
       >
         <Toolbar />
         <Workspace />
+        <Footer />
       </div>
     </EditorProvider>
   )
