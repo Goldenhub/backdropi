@@ -62,10 +62,10 @@ npm run dev
 
 ## Deploying to Vercel
 
-The project includes a `vercel.json` and an OG image endpoint at `/api/og`. Deploy with:
+The project includes a `vercel.json`. Deploy with:
 
 ```bash
-npx vercel
+vercel --prod
 ```
 
-The OG image (1200×630 PNG with the app logo and tagline) is auto-generated at deploy time via the Vercel Edge Function in `api/og.tsx`.
+The OG image (1200×630 SVG with the app logo and tagline) is a static asset at `public/og.svg`.
