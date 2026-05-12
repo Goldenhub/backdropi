@@ -4,6 +4,7 @@ Turn ordinary screenshots into polished mockups — right in the browser. No upl
 
 ## Features
 
+- **Color extraction** — dominant colors are automatically extracted from your screenshot and offered as swatches in the background and shadow color pickers
 - **Backgrounds** — solid color, gradient with 8-direction swatches + angle slider, image upload, or Unsplash search
 - **Shadows** — 4 presets (Subtle, Soft, Deep, Dramatic) or full manual control over blur, opacity, offset, and color
 - **Corner radius** — 3 presets + fine-tune slider (0–128px), independent padding control
@@ -20,6 +21,11 @@ Turn ordinary screenshots into polished mockups — right in the browser. No upl
 - [TypeScript](https://www.typescriptlang.org)
 - [Tailwind CSS v4](https://tailwindcss.com)
 - [lucide-react](https://lucide.dev) (icons)
+- [@vercel/og](https://vercel.com/docs/functions/edge-functions/og-image-generation) (OG image generation)
+
+## Design
+
+Glassy, modern, warm aesthetic. Cream + lavender frosted-glass panels with `backdrop-blur-xl`, soft shadows, and a subtle gradient background.
 
 ## Getting started
 
@@ -51,5 +57,15 @@ npm run dev
 ## Usage
 
 1. **Upload** — drag & drop a screenshot, click to browse, or paste from clipboard
-2. **Customize** — open the tool palette to adjust background, shadow, corners, or switch to browser frame
+2. **Customize** — open the tool palette to adjust background, shadow, corners, or switch to browser frame — extracted image colors appear as swatches
 3. **Export** — choose PNG or JPEG and download at 2× resolution
+
+## Deploying to Vercel
+
+The project includes a `vercel.json` and an OG image endpoint at `/api/og`. Deploy with:
+
+```bash
+npx vercel
+```
+
+The OG image (1200×630 PNG with the app logo and tagline) is auto-generated at deploy time via the Vercel Edge Function in `api/og.tsx`.
